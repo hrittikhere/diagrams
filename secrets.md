@@ -4,6 +4,7 @@ Kubernetes Secrets are important, but do you know a few facts about how Kubernet
 
 →  A secret is only sent to a node if a Pod on that node requires it, but it remains in ETCD unencrypted by default. That's why a good practice is to encrypt it at rest and configure RBAC to protect the API Server from unauthorised access.
 
+→ When the Pod requires it, so the linkage happens through secretKeyRef either via volume or environment variables 
 
 
 →  Kubelet stores the secret in a tmpfs so that the secret is not written to disk storage, as shown in the diagram.
