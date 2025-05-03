@@ -97,3 +97,76 @@ graph TB
     class IC,IC2 controlplane;
 
 ```
+
+```mermaid
+
+%%{init: {'theme': 'neutral', 'themeVariables': { 'fontSize': '16px'}}}%%
+graph TB
+    subgraph "Sidecar Mode"
+        subgraph "Node 1"
+            subgraph "Pod A"
+                A[App Container]
+                AS[Envoy Sidecar]
+                A --- AS
+            end
+            subgraph "Pod B"
+                B[App Container]
+                BS[Envoy Sidecar]
+                B --- BS
+            end
+        end
+        
+        IC[Istiod Control Plane]
+        IC --> AS & BS 
+        
+        %% mTLS connections between sidecars
+        AS <--> BS
+    end
+    
+    subgraph "Ambient Mode"
+        subgraph "Node 1 AM"
+            ZT1[ztunnel]
+            subgraph "Pod A AM"
+                A2[App Container]
+            end
+            subgraph "Pod B AM"
+                B2[App Container]
+            end
+            subgraph "Namespace X"
+                WP[Waypoint Proxy]
+            end
+            ZT1 --- A2 & B2
+        end
+        
+        subgraph "Node 2 AM"
+            ZT2[ztunnel]
+            subgraph "Pod C AM"
+                C2[App Container]
+            end
+            subgraph "Pod D AM"
+                D2[App Container]
+            end
+            ZT2 --- C2 & D2
+        end
+        
+        IC2[Istiod Control Plane]
+        IC2 --> ZT1 & ZT2 & WP
+        
+        %% mTLS connections between ztunnels and Waypoint
+        ZT1 <===> WP
+        ZT2 <===> WP
+    end
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+    classDef sidecar fill:#d1e7dd,stroke:#333,stroke-width:1px;
+    classDef ztunnel fill:#cfe2ff,stroke:#333,stroke-width:1px;
+    classDef waypoint fill:#e2d9f3,stroke:#333,stroke-width:1px;
+    classDef controlplane fill:#fff3cd,stroke:#333,stroke-width:1px;
+    classDef mtls stroke:#ff6b6b,stroke-width:2px,stroke-dasharray: 5 5;
+    
+    class AS,BS,CS,DS sidecar;
+    class ZT1,ZT2 ztunnel;
+    class WP waypoint;
+    class IC,IC2 controlplane;
+
+```
