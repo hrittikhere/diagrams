@@ -22,21 +22,21 @@ Learn more in the official docs: https://kubernetes.io/docs/concepts/configurati
 
 ```mermaid
 graph TD
+
+    subgraph "Master Node"
     A[API Server] --> |stores| B[etcd]
-    A --> |sends| C[Node]
+    end
+
+    A -->D[kubelet]
     
-    subgraph "Node"
-        C --> D[kubelet]
+    subgraph "Worker Node"
         D --> E[tmpfs]
         
-        subgraph "tmpfs"
+        subgraph "store"
             E --> F[Secret X]
         end
         
-        subgraph "Pods"
             G[Pod 1] --> |volumesMounts| F
-            H[Pod 2]
-        end
     end
 
 
