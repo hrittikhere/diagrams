@@ -1,7 +1,7 @@
 
 # Network Segmentation with netpol on Kubernetes Cluster
 ```mermaid
-graph TB
+graph LR
   subgraph cluster[Kubernetes Cluster]
     direction TB
     subgraph frontend-ns[Frontend Namespace]
@@ -45,7 +45,7 @@ graph TB
 
 ```mermaid
 
-graph TB
+graph LR
     ext[External Traffic]
     sub1[Subnet 1<br/>Frontend<br/>VM-1]
     sub2[Subnet 2<br/>Backend<br/>VM-2]
