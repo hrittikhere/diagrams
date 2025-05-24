@@ -1,44 +1,51 @@
 
 # Network Segmentation with netpol on Kubernetes Cluster
 ```mermaid
-
 graph TB
   subgraph cluster[Kubernetes Cluster]
-    subgraph frontend-ns [Frontend Namespace]
-      frontend-pod([Frontend Pod]):::pod
-      frontend-policy[[NetworkPolicy: Allow Egress to Backend]]:::policy
-      ingress([Ingress]):::ingress
+    direction TB
+    subgraph frontend-ns[Frontend Namespace]
+      frontend-pod([Frontend Pod]):::allowed
+      frontend-pol[[NetworkPolicy: Allow Egress to Backend]]:::allowed
+      ingress([Ingress]):::allowed
     end
 
-    subgraph backend-ns [Backend Namespace]
-      backend-pod([Backend Pod]):::pod
-      backend-policy[[NetworkPolicy: Allow Ingress from Frontend, Egress to Database]]:::policy
+    subgraph backend-ns[Backend Namespace]
+      backend-pod([Backend Pod]):::allowed
+      backend-pol[[NetworkPolicy: Allow Ingress from Frontend, Egress to Database]]:::allowed
     end
 
-    subgraph database-ns [Database Namespace]
-      database-pod([Database Pod]):::pod
-      database-policy[[NetworkPolicy: Allow Ingress from Backend]]:::policy
+    subgraph database-ns[Database Namespace]
+      database-pod([Database Pod]):::allowed
+      database-pol[[NetworkPolicy: Allow Ingress from Backend]]:::allowed
     end
   end
 
-  internet[External Traffic] --> ingress
+  internet[External Traffic]:::allowed --> ingress
   ingress --> frontend-pod
-  frontend-pod --> |Allowed by frontend-policy| backend-pod
-  backend-pod --> |Allowed by backend-policy| database-pod
+  frontend-pod --> |Allowed| backend-pod:::allowed
+  backend-pod --> |Allowed| database-pod:::allowed
+  frontend-pod -.-> |Blocked| database-pod:::blocked
 
-  classDef pod fill:#aaffaa,stroke:#333,stroke-width:2px;
-  classDef ingress fill:#ffaa00,stroke:#333,stroke-width:2px;
-  classDef policy fill:#ccccff,stroke:#333,stroke-width:2px;
-  classDef cluster fill:#fff,stroke:#666,stroke-width:2px,stroke-dasharray:5 5;
+  classDef allowed stroke:#2986cc,stroke-width:2px;
+  classDef blocked stroke:#cc0000,stroke-dasharray:5 5,stroke-width:2px;
+  
+  %% Explicit traffic coloring
+  linkStyle 0 stroke:#2986cc,stroke-width:2px;
+  linkStyle 1 stroke:#2986cc,stroke-width:2px;
+  linkStyle 2 stroke:#2986cc,stroke-width:2px;
+  linkStyle 3 stroke:#2986cc,stroke-width:2px;
+  linkStyle 4 stroke:#cc0000,stroke-width:2px,stroke-dasharray:5 5;
+
 
 
 ```
 
-# Network Segmentation with subent on Cloud with VMs
+# Network Segmentation with subnet on Cloud with VMs
 
 ```mermaid
 
-flowchart LR
+graph TB
     ext[External Traffic]
     sub1[Subnet 1<br/>Frontend<br/>VM-1]
     sub2[Subnet 2<br/>Backend<br/>VM-2]
