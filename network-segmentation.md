@@ -59,8 +59,8 @@ flowchart LR
 flowchart LR
     ext[External Traffic]
     
-    %% Group subnets inside vNet with VMs as boxes
-    subgraph vNet [vNet]
+    %% Group subnets inside Virtual Private Cloud with VMs as boxes
+    subgraph vNet [Virtual Private Cloud]
         direction LR
         
         subgraph sub1 [Subnet 1 - Frontend]
